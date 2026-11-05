@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
@@ -10,7 +10,7 @@ async function seedUsers() {
     CREATE TABLE IF NOT EXISTS users (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
-      email TEXT NOT NULL UNIQUE,
+      email TEXT E,
       password TEXT NOT NULL
     );
   `;
@@ -103,15 +103,20 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      seedUsers(),
-      seedCustomers(),
-      seedInvoices(),
-      seedRevenue(),
-    ]);
+    await seedUsers();
+    await seedCustomers();
+    await seedInvoices();
+    await seedRevenue();
 
-    return Response.json({ message: 'Database seeded successfully' });
+    return Response.json({
+      message: 'Database seeded successfully',
+    });
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    console.error('Database seeding error:', error);
+
+    return Response.json(
+      { error: 'Database seeding failed' },
+      { status: 500 },
+    );
   }
 }
