@@ -72,6 +72,11 @@ export async function fetchCardData() {
       invoiceStatusPromise,
     ]);
 
+console.log('Card data:', data);
+console.log('Invoice count:', data[0]);
+console.log('Customer count:', data[1]);
+console.log('Invoice status:', data[2]);
+
     const numberOfInvoices = Number(data[0][0].count ?? '0');
     const numberOfCustomers = Number(data[1][0].count ?? '0');
     const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
